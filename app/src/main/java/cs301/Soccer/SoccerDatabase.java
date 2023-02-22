@@ -52,11 +52,9 @@ public class SoccerDatabase implements SoccerDB {
         String temp = firstName + " ## " + lastName;
 
         for(SoccerPlayer obj : database.values()) {
-            if(obj.getFirstName() == firstName) {
-                if(obj.getLastName() == lastName) {
-                    database.remove(temp);
-                    return true;
-                }
+            if(obj.getFirstName().equals(firstName) && obj.getLastName().equals(lastName)) {
+                database.remove(temp);
+                return true;
             }
         }
         return false;
@@ -69,15 +67,12 @@ public class SoccerDatabase implements SoccerDB {
      */
     @Override
     public SoccerPlayer getPlayer(String firstName, String lastName) {
-        String temp = firstName + " ## " + lastName;
 
         for(SoccerPlayer obj : database.values()) {
-            if (obj.getFirstName() == firstName) {
-                if (obj.getLastName() == lastName) {
-                    return obj;;
+            if(obj.getFirstName().equals(firstName) && obj.getLastName().equals(lastName)) {
+                    return obj;
                 }
             }
-        }
 
         return null;
     }
@@ -89,15 +84,12 @@ public class SoccerDatabase implements SoccerDB {
      */
     @Override
     public boolean bumpGoals(String firstName, String lastName) {
-        String temp = firstName + " ## " + lastName;
 
         for(SoccerPlayer obj : database.values()) {
-            if (obj.getFirstName() == firstName) {
-                if (obj.getLastName() == lastName) {
+            if(obj.getFirstName().equals(firstName) && obj.getLastName().equals(lastName)) {
                     obj.bumpGoals();
-                    return true;;
+                    return true;
                 }
-            }
         }
 
         return false;
@@ -110,14 +102,11 @@ public class SoccerDatabase implements SoccerDB {
      */
     @Override
     public boolean bumpYellowCards(String firstName, String lastName) {
-        String temp = firstName + " ## " + lastName;
 
         for(SoccerPlayer obj : database.values()) {
-            if (obj.getFirstName() == firstName) {
-                if (obj.getLastName() == lastName) {
+            if(obj.getFirstName().equals(firstName) && obj.getLastName().equals(lastName)) {
                     obj.bumpYellowCards();
-                    return true;;
-                }
+                    return true;
             }
         }
 
@@ -131,15 +120,12 @@ public class SoccerDatabase implements SoccerDB {
      */
     @Override
     public boolean bumpRedCards(String firstName, String lastName) {
-        String temp = firstName + " ## " + lastName;
 
         for(SoccerPlayer obj : database.values()) {
-            if (obj.getFirstName() == firstName) {
-                if (obj.getLastName() == lastName) {
+            if(obj.getFirstName().equals(firstName) && obj.getLastName().equals(lastName)) {
                     obj.bumpRedCards();
-                    return true;;
+                    return true;
                 }
-            }
         }
 
         return false;
@@ -153,10 +139,9 @@ public class SoccerDatabase implements SoccerDB {
     @Override
     // report number of players on a given team (or all players, if null)
     public int numPlayers(String teamName) {
-        String temp = teamName;
         int numTemp = 0;
 
-        if(temp == "### ALL ###") {
+        if(teamName.equals("### ALL ###")) {
             return database.keySet().size();
         }
 
@@ -164,7 +149,7 @@ public class SoccerDatabase implements SoccerDB {
             if(teamName == null) {
                 numTemp++;
             }
-            else if (obj.getTeamName() == teamName) {
+            else if (obj.getTeamName().equals(teamName)) {
                 numTemp++;
             }
         }
@@ -216,7 +201,6 @@ public class SoccerDatabase implements SoccerDB {
     @Override
     public boolean writeData(File file) {
         PrintWriter printWriter = null;
-        Enumeration<Integer> temp = database.keys();
 
         try {
             printWriter = new PrintWriter(file);
