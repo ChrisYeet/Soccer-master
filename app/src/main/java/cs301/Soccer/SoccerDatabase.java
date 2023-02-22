@@ -223,8 +223,11 @@ public class SoccerDatabase implements SoccerDB {
             for(SoccerPlayer obj : database.values()) {
                 printWriter.println(logString(obj.getFirstName()));
                 printWriter.println(logString(obj.getLastName()));
-                printWriter.println(logString(obj.getUniform()));
+                printWriter.println(logString(Integer.toString(obj.getUniform())));
                 printWriter.println(logString(obj.getTeamName()));
+                printWriter.println(logString(Integer.toString(obj.getGoals())));
+                printWriter.println(logString(Integer.toString(obj.getRedCards())));
+                printWriter.println(logString(Integer.toString(obj.getYellowCards())));
             }
             printWriter.close();
             return true;
@@ -252,9 +255,16 @@ public class SoccerDatabase implements SoccerDB {
     // return list of teams
     @Override
     public HashSet<String> getTeams() {
-        
+
         for(SoccerPlayer obj : database.values()) {
+            String temp = obj.getFirstName() + " ## " + obj.getLastName();
+            if(database.containsKey(temp)) {
+                database.remove(temp);
+                database.put(temp, obj);
+            }
+
             getTeams().add(obj.getTeamName());
+            getTeams().add(Integer.toString(obj.getGoals()));
         }
         
         return getTeams();
