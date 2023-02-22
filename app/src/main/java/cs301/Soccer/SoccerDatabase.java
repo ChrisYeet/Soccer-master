@@ -1,11 +1,13 @@
 package cs301.Soccer;
 
+import static java.lang.Integer.parseInt;
+
 import android.util.Log;
 import cs301.Soccer.soccerPlayer.SoccerPlayer;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
-import java.security.Key;
+import java.lang.reflect.Array;
 import java.util.*;
 
 /**
@@ -30,13 +32,14 @@ public class SoccerDatabase implements SoccerDB {
                              int uniformNumber, String teamName) {
         String temp = firstName + " ## " + lastName;
 
-        if(database.containsKey(temp)) {
-            return false;
-        }else {
+        for(SoccerPlayer obj : database.values()) {
+            if(obj.getFirstName() == firstName) {
+                return false;
+            }
+        }
             SoccerPlayer player = new SoccerPlayer(firstName, lastName, uniformNumber, teamName);
             database.put(temp, player);
             return true;
-        }
     }
 
     /**
@@ -48,9 +51,13 @@ public class SoccerDatabase implements SoccerDB {
     public boolean removePlayer(String firstName, String lastName) {
         String temp = firstName + " ## " + lastName;
 
-        if(database.containsKey(temp)) {
-            database.remove(temp);
-            return true;
+        for(SoccerPlayer obj : database.values()) {
+            if(obj.getFirstName() == firstName) {
+                if(obj.getLastName() == lastName) {
+                    database.remove(temp);
+                    return true;
+                }
+            }
         }
         return false;
     }
@@ -64,10 +71,13 @@ public class SoccerDatabase implements SoccerDB {
     public SoccerPlayer getPlayer(String firstName, String lastName) {
         String temp = firstName + " ## " + lastName;
 
-            if (database.containsKey(temp)) {
-                Object player = database.get(temp);
-                return (SoccerPlayer) player;
+        for(SoccerPlayer obj : database.values()) {
+            if (obj.getFirstName() == firstName) {
+                if (obj.getLastName() == lastName) {
+                    return obj;;
+                }
             }
+        }
 
         return null;
     }
@@ -81,13 +91,16 @@ public class SoccerDatabase implements SoccerDB {
     public boolean bumpGoals(String firstName, String lastName) {
         String temp = firstName + " ## " + lastName;
 
-        if(database.containsKey(temp)) {
-            SoccerPlayer goals = (SoccerPlayer) database.get(temp);
-            goals.bumpGoals();
-            return true;
-        }else {
-            return false;
+        for(SoccerPlayer obj : database.values()) {
+            if (obj.getFirstName() == firstName) {
+                if (obj.getLastName() == lastName) {
+                    obj.bumpGoals();
+                    return true;;
+                }
+            }
         }
+
+        return false;
     }
 
     /**
@@ -99,13 +112,16 @@ public class SoccerDatabase implements SoccerDB {
     public boolean bumpYellowCards(String firstName, String lastName) {
         String temp = firstName + " ## " + lastName;
 
-        if(database.containsKey(temp)) {
-            SoccerPlayer goals = (SoccerPlayer) database.get(temp);
-            goals.bumpYellowCards();
-            return true;
-        }else {
-            return false;
+        for(SoccerPlayer obj : database.values()) {
+            if (obj.getFirstName() == firstName) {
+                if (obj.getLastName() == lastName) {
+                    obj.bumpYellowCards();
+                    return true;;
+                }
+            }
         }
+
+        return false;
     }
 
     /**
@@ -117,13 +133,16 @@ public class SoccerDatabase implements SoccerDB {
     public boolean bumpRedCards(String firstName, String lastName) {
         String temp = firstName + " ## " + lastName;
 
-        if(database.containsKey(temp)) {
-            SoccerPlayer goals = (SoccerPlayer) database.get(temp);
-            goals.bumpRedCards();
-            return true;
-        }else {
-            return false;
+        for(SoccerPlayer obj : database.values()) {
+            if (obj.getFirstName() == firstName) {
+                if (obj.getLastName() == lastName) {
+                    obj.bumpRedCards();
+                    return true;;
+                }
+            }
         }
+
+        return false;
     }
 
     /**
@@ -140,14 +159,16 @@ public class SoccerDatabase implements SoccerDB {
         if(temp == "### ALL ###") {
             return database.keySet().size();
         }
-        Iterator iterator = database.keySet().iterator();
-        while(iterator.hasNext()) {
-            numTemp++;
-            if(iterator.equals(temp)) {
-                return numTemp;
+
+        for(SoccerPlayer obj : database.values()) {
+            if(teamName == null) {
+                numTemp++;
+            }
+            else if (obj.getTeamName() == teamName) {
+                numTemp++;
             }
         }
-
+        
         return numTemp;
     }
 
@@ -164,18 +185,11 @@ public class SoccerDatabase implements SoccerDB {
             return null;
         }
 
-        Iterator iterator = database.entrySet().iterator();
-        while(iterator.hasNext()) {
-            numTemp++;
-
-            if(teamName == null) {
-                if(iterator.equals(database.size())) {
-                    return (SoccerPlayer) database.elements();
-                }
-            }
-            else {
-                if (iterator.equals(teamName)) {
-                    return (SoccerPlayer) database.elements();
+        for(SoccerPlayer obj : database.values()) {
+            if(teamName == obj.getTeamName()) {
+                numTemp++;
+                if(numTemp == idx) {
+                    return obj;
                 }
             }
         }
@@ -206,12 +220,11 @@ public class SoccerDatabase implements SoccerDB {
 
         try {
             printWriter = new PrintWriter(file);
-            while(temp.hasMoreElements()) {
-                int keys = temp.nextElement();
-                printWriter.println(logString(database.get(keys).getFirstName()));
-                printWriter.println(logString(database.get(keys).getLastName()));
-                printWriter.println(logString(database.get(keys).uniformNumber()));
-                printWriter.println(logString(database.get(keys).teamNumber()));
+            for(SoccerPlayer obj : database.values()) {
+                printWriter.println(logString(obj.getFirstName()));
+                printWriter.println(logString(obj.getLastName()));
+                printWriter.println(logString(obj.getUniform()));
+                printWriter.println(logString(obj.getTeamName()));
             }
             printWriter.close();
             return true;
@@ -239,14 +252,11 @@ public class SoccerDatabase implements SoccerDB {
     // return list of teams
     @Override
     public HashSet<String> getTeams() {
-        Enumeration<Integer> temp = database.keys();
-        Integer[] array = new Integer[database.size()];
-        while(temp.hasMoreElements()) {
-            int keys = temp.nextElement();
-            for (int i = 0; i < database.keySet().size(); i++) {
-                array[i] = Integer.parseInt((String) database.get(keys));
-            }
+        
+        for(SoccerPlayer obj : database.values()) {
+            getTeams().add(obj.getTeamName());
         }
+        
         return getTeams();
     }
 
