@@ -19,7 +19,7 @@ import java.util.*;
 public class SoccerDatabase implements SoccerDB {
 
     // dummied up variable; you will need to change this
-    private Hashtable database = new Hashtable();
+    private HashMap<String, SoccerPlayer>  database = new HashMap<>();
 
     /**
      * add a player
@@ -32,7 +32,7 @@ public class SoccerDatabase implements SoccerDB {
         String temp = firstName + " ## " + lastName;
 
         for(SoccerPlayer obj : database.values()) {
-            if(obj.getFirstName() == firstName) {
+            if(obj.getFirstName().equals(firstName)) {
                 return false;
             }
         }
@@ -216,7 +216,6 @@ public class SoccerDatabase implements SoccerDB {
             return true;
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
-            return false;
         }
     }
 
