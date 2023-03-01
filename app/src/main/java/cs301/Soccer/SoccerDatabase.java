@@ -240,9 +240,7 @@ public class SoccerDatabase implements SoccerDB {
             if(database.containsKey(temp)) {
                 database.put(temp, obj);
             }
-            if(!teams.contains(obj.getTeamName())){
-                teams.add(obj.getTeamName());
-            }
+            teams.add(obj.getTeamName());
         }
         
         return teams;
