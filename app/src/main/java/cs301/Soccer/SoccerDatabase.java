@@ -138,17 +138,13 @@ public class SoccerDatabase implements SoccerDB {
 
         if(teamName.equals("### ALL ###")) {
             return database.keySet().size();
-        }
-
-        for(SoccerPlayer obj : database.values()) {
-            if(teamName == null) {
-                numTemp++;
-            }
-            else if (obj.getTeamName().equals(teamName)) {
-                numTemp++;
+        }else {
+            for (SoccerPlayer obj : database.values()) {
+                if (obj.getTeamName().equals(teamName)) {
+                    numTemp++;
+                }
             }
         }
-        
         return numTemp;
     }
 
