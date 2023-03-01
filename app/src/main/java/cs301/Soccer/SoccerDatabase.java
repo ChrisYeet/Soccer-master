@@ -31,14 +31,14 @@ public class SoccerDatabase implements SoccerDB {
                              int uniformNumber, String teamName) {
         String temp = firstName + " ## " + lastName;
 
-        for(SoccerPlayer obj : database.values()) {
-            if(obj.getFirstName().equals(firstName)) {
-                return false;
-            }
-        }
+        if(database.containsKey(temp)) {
+            database.remove(temp);
+
             SoccerPlayer player = new SoccerPlayer(firstName, lastName, uniformNumber, teamName);
             database.put(temp, player);
             return true;
+        }
+        return false;
     }
 
     /**
@@ -50,11 +50,9 @@ public class SoccerDatabase implements SoccerDB {
     public boolean removePlayer(String firstName, String lastName) {
         String temp = firstName + " ## " + lastName;
 
-        for(SoccerPlayer obj : database.values()) {
-            if(obj.getFirstName().equals(firstName) && obj.getLastName().equals(lastName)) {
-                database.remove(temp);
-                return true;
-            }
+        if(database.containsKey(temp)) {
+            database.remove(temp);
+            return true;
         }
         return false;
     }
@@ -66,13 +64,11 @@ public class SoccerDatabase implements SoccerDB {
      */
     @Override
     public SoccerPlayer getPlayer(String firstName, String lastName) {
+        String temp = firstName + " ## " + lastName;
 
-        for(SoccerPlayer obj : database.values()) {
-            if(obj.getFirstName().equals(firstName) && obj.getLastName().equals(lastName)) {
-                    return obj;
-                }
-            }
-
+        if(database.containsKey(temp)) {
+            return database.get(temp);
+        }
         return null;
     }
 
@@ -237,19 +233,19 @@ public class SoccerDatabase implements SoccerDB {
     // return list of teams
     @Override
     public HashSet<String> getTeams() {
+        HashSet<String> teams = new HashSet<>();
 
         for(SoccerPlayer obj : database.values()) {
             String temp = obj.getFirstName() + " ## " + obj.getLastName();
             if(database.containsKey(temp)) {
-                database.remove(temp);
                 database.put(temp, obj);
             }
-
-            getTeams().add(obj.getTeamName());
-            getTeams().add(Integer.toString(obj.getGoals()));
+            if(!teams.contains(obj.getTeamName())){
+                teams.add(obj.getTeamName());
+            }
         }
         
-        return getTeams();
+        return teams;
     }
 
     /**
