@@ -32,13 +32,12 @@ public class SoccerDatabase implements SoccerDB {
         String temp = firstName + " ## " + lastName;
 
         if(database.containsKey(temp)) {
-            database.remove(temp);
-
+            return false;
+        }else {
             SoccerPlayer player = new SoccerPlayer(firstName, lastName, uniformNumber, teamName);
             database.put(temp, player);
             return true;
         }
-        return false;
     }
 
     /**
@@ -79,14 +78,12 @@ public class SoccerDatabase implements SoccerDB {
      */
     @Override
     public boolean bumpGoals(String firstName, String lastName) {
+        String temp = firstName + " ## " + lastName;
 
-        for(SoccerPlayer obj : database.values()) {
-            if(obj.getFirstName().equals(firstName) && obj.getLastName().equals(lastName)) {
-                    obj.bumpGoals();
-                    return true;
-                }
+        if(database.containsKey(temp)) {
+            database.get(temp).bumpGoals();
+            return true;
         }
-
         return false;
     }
 
@@ -97,14 +94,12 @@ public class SoccerDatabase implements SoccerDB {
      */
     @Override
     public boolean bumpYellowCards(String firstName, String lastName) {
+        String temp = firstName + " ## " + lastName;
 
-        for(SoccerPlayer obj : database.values()) {
-            if(obj.getFirstName().equals(firstName) && obj.getLastName().equals(lastName)) {
-                    obj.bumpYellowCards();
-                    return true;
-            }
+        if(database.containsKey(temp)) {
+            database.get(temp).bumpYellowCards();
+            return true;
         }
-
         return false;
     }
 
@@ -115,14 +110,12 @@ public class SoccerDatabase implements SoccerDB {
      */
     @Override
     public boolean bumpRedCards(String firstName, String lastName) {
+        String temp = firstName + " ## " + lastName;
 
-        for(SoccerPlayer obj : database.values()) {
-            if(obj.getFirstName().equals(firstName) && obj.getLastName().equals(lastName)) {
-                    obj.bumpRedCards();
-                    return true;
-                }
+        if(database.containsKey(temp)) {
+            database.get(temp).bumpRedCards();
+            return true;
         }
-
         return false;
     }
 
@@ -136,16 +129,16 @@ public class SoccerDatabase implements SoccerDB {
     public int numPlayers(String teamName) {
         int numTemp = 0;
 
-        if(Objects.equals(teamName, "### ALL ###")) {
+        if(teamName == null) {
             return database.keySet().size();
         }else {
-            for (SoccerPlayer obj : database.values()) {
-                if (obj.getTeamName().equals(teamName)) {
+            for(SoccerPlayer obj : database.values()) {
+                if(obj.getTeamName().equalsIgnoreCase(teamName)) {
                     numTemp++;
                 }
             }
+            return numTemp;
         }
-        return numTemp;
     }
 
     /**
@@ -162,11 +155,13 @@ public class SoccerDatabase implements SoccerDB {
         }
 
         for(SoccerPlayer obj : database.values()) {
-            if(Objects.equals(teamName, obj.getTeamName())) {
-                numTemp++;
+            if(teamName == null) {
+                return null;
+            }else if(obj.getTeamName().equalsIgnoreCase(teamName)) {
                 if(numTemp == idx) {
                     return obj;
                 }
+                numTemp++;
             }
         }
         return null;
@@ -180,6 +175,39 @@ public class SoccerDatabase implements SoccerDB {
     // read data from file
     @Override
     public boolean readData(File file) {
+        Scanner scanner;
+        try {
+            scanner = new Scanner(file);
+            while(scanner.hasNext()) {
+                SoccerPlayer soccerPlayer;
+                String temp;
+                String first = scanner.next();
+                String last = scanner.next();
+                int uniform = scanner.nextInt();
+                String team = scanner.next();
+                int int1 = scanner.nextInt();
+                int int2 = scanner.nextInt();
+                int int3 = scanner.nextInt();
+
+                soccerPlayer = new SoccerPlayer(first, last, uniform, team);
+                for(int i = 0; i <= int1; i++) {
+                    soccerPlayer.bumpGoals();
+                }
+                for(int i = 0; i <= int2; i++) {
+                    soccerPlayer.bumpRedCards();
+                }
+                for(int i = 0; i <= int3; i++) {
+                    soccerPlayer.bumpYellowCards();
+                }
+
+                temp = first + " ## " + last;
+                database.put(temp, soccerPlayer);
+            }
+
+            scanner.close();
+        }catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
         return file.exists();
     }
 
@@ -217,7 +245,7 @@ public class SoccerDatabase implements SoccerDB {
      * @return the string s, unchanged
      */
     private String logString(String s) {
-//        Log.i("write string", s);
+        Log.i("write string", s);
         return s;
     }
 
