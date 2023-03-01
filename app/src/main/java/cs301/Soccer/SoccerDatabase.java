@@ -136,7 +136,7 @@ public class SoccerDatabase implements SoccerDB {
     public int numPlayers(String teamName) {
         int numTemp = 0;
 
-        if(teamName.equals("### ALL ###")) {
+        if(Objects.equals(teamName, "### ALL ###")) {
             return database.keySet().size();
         }else {
             for (SoccerPlayer obj : database.values()) {
@@ -162,7 +162,7 @@ public class SoccerDatabase implements SoccerDB {
         }
 
         for(SoccerPlayer obj : database.values()) {
-            if(teamName == obj.getTeamName()) {
+            if(Objects.equals(teamName, obj.getTeamName())) {
                 numTemp++;
                 if(numTemp == idx) {
                     return obj;
